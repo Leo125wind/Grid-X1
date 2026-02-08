@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Grid-X Marketplace</title>
+    <style>
+        body {
+            background: #121212;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #00ff99;
+            margin-bottom: 20px;
+        }
+
+        #container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .card {
+            background: #1e1e1e;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .busy-card {
+            border-color: #cc0000;
+            opacity: 0.7;
+        }
+
+        /* Gray out busy nodes */
+
+        .info {
+            flex-grow: 1;
+        }
+
+        .password-box {
+            background: #2a2a2a;
+            color: #00ff99;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            border: 1px dashed #444;
+            margin-top: 8px;
+            display: inline-block;
+        }
+
+        .password-hidden {
+            color: #ff4444;
+            border-color: #ff4444;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .btn-disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+
+        /* Disabled style */
+    </style>
+</head>
+
+<body>
+    <h1>🌍 Grid-X Compute Market</h1>
+    <div id="container">
+        {% for id, node in nodes.items() %}
+        {% set is_busy = 'BUSY' in node.status %}
+
+        <div class="card {% if is_busy %}busy-card{% endif %}">
+            <div class="info">
+                <div style="font-weight:bold; font-size:1.1em;">{{ node.specs }}</div>
+                <div style="color:#888;">ID: {{ id }}</div>
+
+                <div class="password-box {% if is_busy %}password-hidden{% endif %}">
+                    Pass: <strong>{{ node.password }}</strong>
+                </div>
+
+                <div style="margin-top:5px; font-weight:bold;">
+                    {{ node.status }}
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button class="btn {% if is_busy %}btn-disabled{% endif %}" {% if is_busy %}disabled{% endif %}
+                    onclick="copyCommand('{{ node.address }}', '{{ node.port }}')">
+                    📋 SSH
+                </button>
+
+                <button class="btn {% if is_busy %}btn-disabled{% endif %}" {% if is_busy %}disabled{% endif %}
+                    style="background: #e67e22;" onclick="copyScp('{{ node.address }}', '{{ node.port }}')">
+                    📂 SCP
+                </button>
+            </div>
+        </div>
+        {% else %}
+        <p style="text-align:center;">No hosts online.</p>
+        {% endfor %}
+    </div>
+
+    <div id="toast"
+        style="visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 1; bottom: 30px; border-left: 5px solid #00ff99;">
+        Command Copied!</div>
+    <script>
+        function copyCommand(addr, port) {
+            navigator.clipboard.writeText(`ssh renter@${addr} -p ${port}`).then(() => showToast("SSH Copied!"));
+        }
+        function copyScp(addr, port) {
+            navigator.clipboard.writeText(`scp -P ${port} "FILE" renter@${addr}:/home/renter/`).then(() => showToast("SCP Copied!"));
+        }
+        function showToast(msg) {
+            var x = document.getElementById("toast"); x.innerText = msg; x.style.visibility = "visible";
+            setTimeout(function () { x.style.visibility = "hidden"; }, 3000);
+        }
+        setInterval(() => window.location.reload(), 5000);
+    </script>
+</body>
+
+</html>
