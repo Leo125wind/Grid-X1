@@ -1,0 +1,20 @@
+# Python junk
+__pycache__/
+*.pyc
+venv/
+.env
+
+# Docker junk
+gridx-secure-unit.tar
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Grid-X Specific
+installed.flag
+
