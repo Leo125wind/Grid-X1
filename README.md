@@ -4,8 +4,6 @@
 
 The system uses **Docker Containers** for isolation, **Ngrok** for tunneling (no port forwarding required), and a central **Flask Registry** to manage the marketplace.
 
-![Grid-X Architecture](https://via.placeholder.com/800x400?text=Grid-X+Architecture+Diagram)
-*(Replace with actual architecture screenshot)*
 
 ---
 
@@ -66,24 +64,33 @@ To run a complete network, you need at least one **Registry** (Server) and one *
 ---
 
 ### 3️⃣ Connect as a User (The Renter)
-*Access the compute power.*
+*Access the compute power and transfer files.*
 
 #### Method A: Web Dashboard (Easiest)
 1.  Open the **Registry URL** in your browser.
 2.  Find a node with status **READY 🟢**.
-3.  Click **[📋 COPY SSH]**.
-4.  Paste the command into your terminal:
-    ```bash
-    ssh renter@0.tcp.in.ngrok.io -p 12345
-    ```
-5.  Enter the **Password** displayed on the dashboard card.
+3.  **Connect (SSH):**
+    * Click **[📋 COPY SSH]**.
+    * Paste the command into your terminal:
+      ```bash
+      ssh renter@0.tcp.in.ngrok.io -p 12345
+      ```
+    * Enter the **Password** displayed on the dashboard card.
+
+4.  **Transfer Files (SCP):**
+    * Click **[📂 COPY SCP]** (The orange button).
+    * It copies a template command like:
+      ```bash
+      scp -P 12345 "YOUR_FILE" renter@0.tcp.in.ngrok.io:/home/renter/
+      ```
+    * Paste it into your terminal, replace `"YOUR_FILE"` with your actual file path (drag and drop the file into the terminal), and hit Enter.
 
 #### Method B: CLI Tool (Advanced)
 1.  Navigate to `GridX_User`.
 2.  Update `tenant.py` with the `REGISTRY_URL`.
 3.  Run `Start_Client.bat` (Windows) or `./Start_Client.sh` (Linux).
 4.  Use the arrow keys to select a node and connect instantly.
-
+   
 ---
 
 ## 🛡️ Security Features
